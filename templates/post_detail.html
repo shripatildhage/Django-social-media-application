@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Post{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-8">
+  {% include "partials/post_card.html" %}
+  <div class="card mb-3"><div class="card-body">
+    <h6>&#128172; Comments</h6>
+    {% for c in comments %}
+      <div class="border-bottom py-2"><a href="{% url 'profile' c.author.username %}" class="fw-semibold text-decoration-none">{{ c.author.username }}</a>: {{ c.content }}
+        <span class="small text-secondary">{{ c.created_at|timesince }} ago</span></div>
+    {% empty %}<p class="text-secondary small">No comments yet.</p>{% endfor %}
+    <form method="post" action="{% url 'comment_add' post.id %}" class="d-flex gap-2 mt-3">{% csrf_token %}
+      {{ comment_form.content }}<button class="btn btn-primary">Send</button>
+    </form>
+  </div></div>
+  {% if post.author != user %}
+  <form method="post" action="{% url 'post_report' post.id %}" class="d-flex gap-2">{% csrf_token %}
+    <input name="reason" class="form-control form-control-sm" placeholder="Report reason (spam, abuse...)">
+    <button class="btn btn-sm btn-outline-warning">Report</button>
+  </form>
+  {% endif %}
+</div></div>
+{% endblock %}

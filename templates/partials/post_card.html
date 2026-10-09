@@ -1,0 +1,25 @@
+<div class="card mb-3 post-card" id="post-{{ post.id }}">
+  <div class="card-body">
+    <div class="d-flex align-items-center mb-2">
+      {% if post.author.profile.profile_picture %}
+        <img src="{{ post.author.profile.profile_picture.url }}" class="avatar me-2" alt="">
+      {% else %}<div class="avatar avatar-ph me-2">{{ post.author.username|slice:":1"|upper }}</div>{% endif %}
+      <div>
+        <a class="fw-semibold text-decoration-none" href="{% url 'profile' post.author.username %}">{{ post.author.get_full_name|default:post.author.username }}</a>
+        <div class="small text-secondary">@{{ post.author.username }} &middot; {{ post.created_at|timesince }} ago</div>
+      </div>
+    </div>
+    <p class="mb-2" style="white-space:pre-wrap">{{ post.content }}</p>
+    {% if post.image %}<img src="{{ post.image.url }}" class="img-fluid rounded mb-2" alt="Post image">{% endif %}
+    <div class="d-flex gap-3 align-items-center small">
+      <form method="post" action="{% url 'post_like' post.id %}" class="like-form">{% csrf_token %}
+        <button class="btn btn-sm btn-outline-primary">&#128077; <span class="like-count">{{ post.likes.count }}</span> Likes</button>
+      </form>
+      <a class="btn btn-sm btn-outline-secondary" href="{% url 'post_detail' post.id %}">&#128172; {{ post.comments.count }} Comments</a>
+      {% if post.author == user %}
+      <form method="post" action="{% url 'post_delete' post.id %}" onsubmit="return confirm('Delete this post?')">{% csrf_token %}
+        <button class="btn btn-sm btn-outline-danger">Delete</button></form>
+      {% endif %}
+    </div>
+  </div>
+</div>

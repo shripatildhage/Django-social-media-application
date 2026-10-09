@@ -1,0 +1,9 @@
+<div class="d-flex align-items-center justify-content-between py-2 border-bottom">
+  <a class="text-decoration-none" href="{% url 'profile' u.username %}">
+    <strong>{{ u.get_full_name|default:u.username }}</strong> <span class="text-secondary">@{{ u.username }}</span>
+    {% if u.profile.bio %}<div class="small text-secondary">{{ u.profile.bio|truncatechars:70 }}</div>{% endif %}
+  </a>
+  {% if u != user %}
+  <form method="post" action="{% url 'toggle_follow' u.username %}">{% csrf_token %}<button class="btn btn-sm btn-outline-primary">Follow / Unfollow</button></form>
+  {% endif %}
+</div>

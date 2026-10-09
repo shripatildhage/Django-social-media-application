@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: social
+      POSTGRES_USER: social
+      POSTGRES_PASSWORD: social
+    volumes: [pgdata:/var/lib/postgresql/data]
+  web:
+    build: .
+    env_file: .env.example
+    environment:
+      DJANGO_DEBUG: "True"
+      DATABASE_URL_NAME: social
+      DATABASE_USER: social
+      DATABASE_PASSWORD: social
+      DATABASE_HOST: db
+    ports: ["8000:8000"]
+    depends_on: [db]
+    volumes: [media:/app/media]
+volumes:
+  pgdata:
+  media:

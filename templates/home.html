@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="row g-4">
+  <div class="col-lg-8">
+    <div class="card mb-3"><div class="card-body">
+      <h5>Welcome back, {{ user.first_name|default:user.username }}!</h5>
+      <form method="post" enctype="multipart/form-data">{% csrf_token %}
+        {{ form.non_field_errors }}
+        {{ form.content }}{% for e in form.content.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}
+        <div class="d-flex justify-content-between mt-2">
+          <div>{{ form.image }}{% for e in form.image.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+          <button class="btn btn-primary">Post</button>
+        </div>
+      </form>
+    </div></div>
+
+    <ul class="nav nav-pills mb-3">
+      <li class="nav-item"><a class="nav-link {% if mode != 'all' %}active{% endif %}" href="?feed=following">Following</a></li>
+      <li class="nav-item"><a class="nav-link {% if mode == 'all' %}active{% endif %}" href="?feed=all">Discover</a></li>
+    </ul>
+
+    {% for post in page %}{% include "partials/post_card.html" %}
+    {% empty %}<p class="text-secondary">Nothing here yet. Follow people or try Discover.</p>{% endfor %}
+
+    <nav class="d-flex justify-content-between">
+      {% if page.has_previous %}<a class="btn btn-outline-secondary" href="?feed={{ mode }}&page={{ page.previous_page_number }}">&larr; Newer</a>{% else %}<span></span>{% endif %}
+      {% if page.has_next %}<a class="btn btn-outline-secondary" href="?feed={{ mode }}&page={{ page.next_page_number }}">Older &rarr;</a>{% endif %}
+    </nav>
+  </div>
+  <div class="col-lg-4">
+    <div class="card"><div class="card-body">
+      <h6>&#128101; Who to follow</h6>
+      {% for u in suggestions %}{% include "partials/user_row.html" %}{% empty %}<p class="small text-secondary">No suggestions.</p>{% endfor %}
+    </div></div>
+  </div>
+</div>
+{% endblock %}
